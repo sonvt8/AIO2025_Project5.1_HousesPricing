@@ -1,0 +1,31 @@
+# .pre-commit-config.yaml
+# Cấu hình pre-commit hooks đơn giản cho dự án MLOps
+
+default_language_version:
+    python: python3.11
+
+repos:
+    # === CODE FORMATTING ===
+    -   repo: https://github.com/psf/black
+        rev: 24.10.0
+        hooks:
+        -   id: black
+            language_version: python3.11
+
+    # === CODE LINTING ===
+    -   repo: https://github.com/astral-sh/ruff-pre-commit
+        rev: v0.8.4
+        hooks:
+        -   id: ruff
+            args: [--fix, --exit-non-zero-on-fix]
+
+    # === BASIC FILE CHECKS ===
+    -   repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: v4.5.0
+        hooks:
+        -   id: trailing-whitespace
+        -   id: end-of-file-fixer
+        -   id: check-json
+        -   id: check-added-large-files
+        -   id: check-merge-conflict
+        -   id: mixed-line-ending
