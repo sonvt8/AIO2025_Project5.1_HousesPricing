@@ -1,0 +1,90 @@
+{
+  "model_info": {
+    "name": "XGB",
+    "type": "Single",
+    "timestamp": "2025-10-26T08:12:43.372223",
+    "model_version": "1.0"
+  },
+  "performance": {
+    "cv_rmse_mean": 25259.41641200907,
+    "cv_rmse_std": 3479.6357763278006,
+    "cv_r2_mean": 0.8921142012886006,
+    "cv_r2_std": 0.02272493445890945,
+    "test_rmse": 24608.889785175903,
+    "test_r2": 0.921046714298606
+  },
+  "hyperparameters": {
+    "learning_rate": 0.012037669608743282,
+    "max_depth": 3,
+    "min_child_weight": 1.8156373898780618,
+    "subsample": 0.7024567531108088,
+    "colsample_bytree": 0.6821773034793186,
+    "reg_lambda": 0.6163829697372443,
+    "reg_alpha": 0.43970716418792266,
+    "gamma": 0.19674336438311033,
+    "max_bin": 222
+  },
+  "feature_engineering": {
+    "domain_features": [
+      "TotalSF",
+      "TotalBath",
+      "HouseAge",
+      "RemodAge",
+      "GarageAge",
+      "IsRemodeled",
+      "Has2ndFlr",
+      "TotalPorchSF",
+      "BathPerBedroom",
+      "RoomsPerArea",
+      "LotAreaRatio",
+      "MoSold_sin",
+      "MoSold_cos",
+      "Neighborhood_BldgType",
+      "Ln_TotalSF",
+      "IQ_OQ_GrLiv",
+      "IQ_OQ_TotalSF",
+      "LotArea_clip"
+    ],
+    "target_encoder_features": [
+      "Neighborhood",
+      "MSZoning",
+      "Exterior1st",
+      "Exterior2nd",
+      "SaleCondition",
+      "BldgType",
+      "Neighborhood_BldgType"
+    ],
+    "target_encoder_alpha": 30.0,
+    "rare_pooler_min_count": 15,
+    "quantile_transformer_n_quantiles": 200,
+    "quantile_transformer_subsample": 200000,
+    "imputation_strategy_categorical": "most_frequent",
+    "imputation_strategy_numerical": "median"
+  },
+  "preprocessing": {
+    "ordinal_features": [
+      "ExterQual",
+      "ExterCond",
+      "BsmtQual",
+      "BsmtCond",
+      "BsmtExposure",
+      "BsmtFinType1",
+      "BsmtFinType2",
+      "HeatingQC",
+      "KitchenQual",
+      "FireplaceQu",
+      "GarageFinish",
+      "GarageQual",
+      "GarageCond",
+      "PoolQC",
+      "Fence",
+      "Functional",
+      "PavedDrive",
+      "Street",
+      "Alley",
+      "CentralAir"
+    ],
+    "missingness_indicator_auto": true,
+    "one_hot_encoder_handle_unknown": "ignore"
+  }
+}

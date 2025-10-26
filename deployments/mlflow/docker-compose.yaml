@@ -1,0 +1,16 @@
+services:
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow-tracking-server
+    ports:
+      - "5555:5000"
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --backend-store-uri sqlite:////data/mlflow.db
+      --serve-artifacts
+      --artifacts-destination /artifacts
+    volumes:
+      - ./mlflow_db:/data
+      - ./mlruns:/artifacts
+    restart: unless-stopped

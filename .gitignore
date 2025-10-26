@@ -206,3 +206,33 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project specific - Generated files and artifacts
+# Model artifacts (not committed - too large)
+src/models/*.joblib
+src/models/*.pkl
+!src/models/.gitkeep
+
+# MLflow tracking data
+deployments/mlflow/mlruns/
+deployments/mlflow/mlflow_db/
+
+# Intermediate data (not actively used)
+data/processed/
+data/featured/
+
+# Jupyter notebook outputs
+notebooks/*.ipynb_checkpoints
+notebooks/**/*.ipynb_checkpoints
+
+# Test outputs
+test_outputs/
+*.png
+*.jpg
+*.jpeg
+!*.gitkeep
+
+# Logs
+*.log
+logs/
+mlruns/
