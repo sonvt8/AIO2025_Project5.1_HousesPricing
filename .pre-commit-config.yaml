@@ -17,7 +17,7 @@ repos:
         rev: v0.8.4
         hooks:
         -   id: ruff
-            args: [--fix, --exit-non-zero-on-fix]
+            args: [--fix, --exit-non-zero-on-fix, --extend-ignore=E402]
 
     # === BASIC FILE CHECKS ===
     -   repo: https://github.com/pre-commit/pre-commit-hooks

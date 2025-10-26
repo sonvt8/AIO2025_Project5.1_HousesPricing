@@ -13,8 +13,8 @@ requests>=2.28.0       # HTTP library for making API calls — essential for tes
 # 🧠 MACHINE LEARNING
 # ---------------------------------------------
 scikit-learn==1.2.2    # Classic ML models (regression, classification, clustering), preprocessing, model evaluation
-xgboost==1.7.5
-lightgbm==3.3.5
+xgboost
+lightgbm
 catboost
 optuna
 
