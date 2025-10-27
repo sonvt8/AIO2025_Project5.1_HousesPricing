@@ -10,6 +10,13 @@ AIO2025_Project5.1_HousesPricing/
 │   └── raw/                                    # Dữ liệu gốc
 │       └── train-house-prices-advanced-regression-techniques.csv
 ├── src/
+│   ├── api/                                    # FastAPI application
+│   │   ├── __init__.py
+│   │   ├── main.py                            # FastAPI app
+│   │   ├── models.py                          # Pydantic models
+│   │   ├── inference.py                       # Inference logic & CLI
+│   │   ├── run_api.py                         # Script chạy API server
+│   │   └── test_api.py                        # Test script cho API
 │   ├── processing/                             # Xử lý dữ liệu
 │   │   ├── __init__.py
 │   │   ├── transformers.py                     # Custom transformers
@@ -27,12 +34,14 @@ AIO2025_Project5.1_HousesPricing/
 │       ├── best_pipeline.joblib              # Pipeline hoàn chỉnh
 │       └── feature_pipeline.joblib           # Feature pipeline
 ├── deployments/
+│   ├── api/                                   # API deployment
+│   │   ├── docker-compose.yaml                # Docker Compose for API
+│   │   └── Dockerfile                        # Dockerfile for API
 │   └── mlflow/
 │       └── docker-compose.yaml                # MLflow tracking server
 ├── notebooks/
 │   └── house_price_analysis_mlflow.ipynb      # Jupyter notebook experiments
-├── train.py                                   # Script training chính
-├── inference.py                               # Script inference
+├── train.py                                   # Script training chính (root)
 ├── requirements.txt                           # Dependencies
 └── README.md                                  # File này
 ```
@@ -62,6 +71,24 @@ Chạy script training:
 ```bash
 python train.py
 ```
+
+### 4. Khởi động API Server (Optional)
+
+Chạy FastAPI server:
+
+```bash
+python src/api/run_api.py
+```
+
+hoặc sử dụng inference CLI:
+
+```bash
+python src/api/inference.py data/raw/test_data.csv --output predictions.csv
+```
+
+API sẽ chạy tại: **http://localhost:8000**
+- Interactive docs: **http://localhost:8000/docs**
+- API endpoints: `/health`, `/predict`, `/predict/batch`
 
 ## 📊 Kết quả
 
@@ -158,10 +185,39 @@ Save pipeline (src/models/)
 
 ## 🎯 Sử dụng Model
 
-### Inference
+### Inference qua API (Recommended)
+
+**Single prediction:**
+```bash
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"OverallQual": 7, "GrLivArea": 1710, "YearBuilt": 2003}'
+```
+
+**Batch prediction:**
+```bash
+curl -X POST "http://localhost:8000/predict/batch" \
+  -H "Content-Type: application/json" \
+  -d '{"houses": [{...}, {...}]}'
+```
+
+**Python client:**
+```python
+import requests
+
+response = requests.post(
+    "http://localhost:8000/predict",
+    json={"OverallQual": 7, "GrLivArea": 1710, "YearBuilt": 2003}
+)
+print(response.json())
+```
+
+Xem thêm tại [src/api/README.md](src/api/README.md) để biết chi tiết về API.
+
+### Inference qua CLI
 
 ```bash
-python inference.py data/raw/test_data.csv --output predictions.csv
+python src/api/inference.py data/raw/test_data.csv --output predictions.csv
 ```
 
 ### Programmatic usage
@@ -199,10 +255,10 @@ print(f"Predicted prices: {predictions}")
 
 ## 🚧 Tương lai
 
-- [ ] API endpoint với FastAPI
+- [x] API endpoint với FastAPI
 - [ ] Streamlit app cho interactive predictions
 - [ ] Model versioning
-- [ ] Batch inference
+- [x] Batch inference
 - [ ] Model monitoring
 
 ## 📝 Notes
@@ -210,7 +266,45 @@ print(f"Predicted prices: {predictions}")
 - Raw data: Giữ nguyên trong `data/raw/`
 - Trained models: Lưu trong `src/models/` (không commit lên Git)
 - MLflow data: Lưu trong `deployments/mlflow/` (không commit lên Git)
+- API: Chạy trên port 8000, có thể truy cập qua Docker hoặc local
 - Intermediate data: **Không lưu** - chỉ dùng pipeline để transform
+
+## 🔧 Deployment
+
+### Option 1: Docker Compose (Recommended)
+
+Deploy API và MLflow cùng lúc:
+
+```bash
+cd deployments/api
+docker compose up -d
+```
+
+Xem chi tiết: [DEPLOYMENT.md](DEPLOYMENT.md)
+
+### Option 2: Local Development
+
+```bash
+# Start API
+python src/api/run_api.py
+
+# Start MLflow (separate terminal)
+cd deployments/mlflow
+docker compose up -d
+```
+
+### Test API
+
+```bash
+# After starting API
+python src/api/test_api.py
+```
+
+### Access Services
+
+- API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
+- MLflow UI: http://localhost:5555
 
 ## 📄 License
 

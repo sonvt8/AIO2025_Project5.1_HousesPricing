@@ -1,0 +1,47 @@
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: deployments/api/Dockerfile
+    container_name: house-price-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount model files from host (ensure models are available)
+      - ../../src/models:/app/src/models:ro
+      - ../../src/configs:/app/src/configs:ro
+    environment:
+      - MODEL_PATH=/app/src/models/best_pipeline.joblib
+    restart: unless-stopped
+    depends_on:
+      - mlflow
+    networks:
+      - house-pricing-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health').raise_for_status()"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow-tracking-server
+    ports:
+      - "5555:5000"
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --backend-store-uri sqlite:////data/mlflow.db
+      --serve-artifacts
+      --artifacts-destination /artifacts
+    volumes:
+      - ./mlflow_db:/data
+      - ./mlruns:/artifacts
+    restart: unless-stopped
+    networks:
+      - house-pricing-network
+
+networks:
+  house-pricing-network:
+    driver: bridge
