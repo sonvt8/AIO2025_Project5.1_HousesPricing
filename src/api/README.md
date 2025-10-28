@@ -172,19 +172,36 @@ Make sure these files exist before running the API.
 
 ## 🐳 Docker Deployment (Optional)
 
-You can containerize the API using Docker:
+You can containerize the API using Docker. A production-ready `Dockerfile` is provided in this folder.
 
-```dockerfile
-FROM python:3.9-slim
+### Build image
+From project root (recommended tag `house-api`):
+```bash
+docker build -f src/api/Dockerfile -t house-api .
+```
 
-WORKDIR /app
+### Run container
+```bash
+docker run --rm -p 8000:8000 \
+  -e PYTHONUNBUFFERED=1 \
+  house-api
+```
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+The API will be available at `http://localhost:8000`.
 
-COPY . .
+### Run with local data/model bind (optional)
+If you frequently update the model or raw data, you can mount them:
+```bash
+docker run --rm -p 8000:8000 \
+  -v "$PWD/src/models:/app/src/models:ro" \
+  -v "$PWD/src/configs:/app/src/configs:ro" \
+  -v "$PWD/data/raw:/app/data/raw:ro" \
+  house-api
+```
 
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+### Healthcheck
+```bash
+curl http://localhost:8000/health
 ```
 
 ## 📝 Notes

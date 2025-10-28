@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: ../..
-      dockerfile: deployments/api/Dockerfile
+      dockerfile: src/api/Dockerfile
     container_name: house-price-api
     ports:
       - "8000:8000"
@@ -10,6 +10,7 @@ services:
       # Mount model files from host (ensure models are available)
       - ../../src/models:/app/src/models:ro
       - ../../src/configs:/app/src/configs:ro
+      - ../../data/raw:/app/data/raw:ro
     environment:
       - MODEL_PATH=/app/src/models/best_pipeline.joblib
     restart: unless-stopped
@@ -23,6 +24,20 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
+
+  frontend:
+    build:
+      context: ../..
+      dockerfile: src/frontend/Dockerfile
+    container_name: house-price-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+    networks:
+      - house-pricing-network
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest

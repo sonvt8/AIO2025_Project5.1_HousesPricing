@@ -1,6 +1,6 @@
-# API Deployment with Docker Compose
+# API & Frontend Deployment with Docker Compose
 
-Hướng dẫn deploy House Price Prediction API sử dụng Docker Compose.
+Hướng dẫn deploy House Price Prediction API và giao diện Streamlit sử dụng Docker Compose.
 
 ## 📋 Yêu cầu
 
@@ -27,8 +27,8 @@ python train.py
 # Navigate to api deployment directory
 cd deployments/api
 
-# Build và start services
-docker compose up -d
+# Build và start API + Frontend + MLflow
+docker compose up -d --build
 
 # Xem logs
 docker compose logs -f
@@ -38,6 +38,7 @@ docker compose logs -f
 
 - **API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
+- **Frontend (Streamlit)**: http://localhost:8501
 - **MLflow**: http://localhost:5555
 
 ## 📊 Services
@@ -169,13 +170,14 @@ docker compose up -d
 
 ## 📦 Volume Mounts
 
-Model files được mount từ host:
+Model/raw data được mount từ host:
 
 ```
 Host                          Container
 ─────────────────────────────────────────
 src/models/    →    /app/src/models
 src/configs/   →    /app/src/configs
+data/raw/      →    /app/data/raw
 ```
 
 ## 🔐 Security Notes

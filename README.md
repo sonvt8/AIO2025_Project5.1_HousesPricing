@@ -1,6 +1,6 @@
 # Dự đoán Giá Nhà - AIO2025 Project 5.1
 
-Hệ thống dự đoán giá nhà sử dụng XGBoost với MLflow tracking, dựa trên Ames Housing Dataset.
+Hệ thống dự đoán giá nhà sử dụng XGBoost, FastAPI, Streamlit và MLflow (Ames Housing Dataset).
 
 ## 📁 Cấu trúc dự án
 
@@ -46,49 +46,28 @@ AIO2025_Project5.1_HousesPricing/
 └── README.md                                  # File này
 ```
 
-## 🚀 Cài đặt
+## 🚀 Quick Start
 
-### 1. Cài đặt dependencies
+### A. Chạy nhanh bằng Docker Compose (khuyến nghị)
+
+```bash
+cd deployments/api
+docker compose up -d --build
+```
+
+Truy cập:
+- API: http://localhost:8000 (Docs: http://localhost:8000/docs)
+- Frontend: http://localhost:8501
+- MLflow: http://localhost:5555
+
+### B. Chạy local (dev)
 
 ```bash
 pip install -r requirements.txt
+python train.py               # nếu chưa có model
+python src/api/run_api.py     # chạy API tại 8000
+# tab khác: streamlit run src/frontend/app.py
 ```
-
-### 2. Khởi động MLflow tracking server
-
-Mở terminal mới và chạy:
-
-```bash
-docker compose -f deployments/mlflow/docker-compose.yaml up -d
-```
-
-MLflow UI sẽ chạy tại: **http://localhost:5555**
-
-### 3. Training model
-
-Chạy script training:
-
-```bash
-python train.py
-```
-
-### 4. Khởi động API Server (Optional)
-
-Chạy FastAPI server:
-
-```bash
-python src/api/run_api.py
-```
-
-hoặc sử dụng inference CLI:
-
-```bash
-python src/api/inference.py data/raw/test_data.csv --output predictions.csv
-```
-
-API sẽ chạy tại: **http://localhost:8000**
-- Interactive docs: **http://localhost:8000/docs**
-- API endpoints: `/health`, `/predict`, `/predict/batch`
 
 ## 📊 Kết quả
 
@@ -107,13 +86,9 @@ Sau khi training, các files sẽ được tạo trong `src/models/`:
 - `best_pipeline.joblib` - Pipeline hoàn chỉnh (features + model)
 - `feature_pipeline.joblib` - Feature engineering pipeline
 
-## 🔍 MLflow UI
+## 🔍 MLflow
 
-Xem kết quả training trên MLflow:
-
-1. Truy cập: **http://localhost:5555**
-2. Chọn experiment: `House_Price_Prediction`
-3. Xem metrics, parameters và model artifacts
+Mở MLflow UI tại `http://localhost:5555` để xem metrics, params và artifacts (khi chạy bằng compose đã có sẵn).
 
 ### Thông tin được track
 
@@ -167,25 +142,13 @@ Xem kết quả training trên MLflow:
 5. Test set evaluation
 6. Lưu pipeline và artifacts vào MLflow
 
-## 🔄 Workflow
+## 🔄 Quy trình
 
-```
-Raw data (data/raw/)
-    ↓
-Preprocessing (custom transformers)
-    ↓
-Feature Engineering (domain features)
-    ↓
-Training (XGBoost với MLflow tracking)
-    ↓
-Evaluation (CV + Test metrics)
-    ↓
-Save pipeline (src/models/)
-```
+Raw data → Preprocessing → Feature Engineering → Training (MLflow) → Evaluation → Save pipeline (`src/models/`)
 
 ## 🎯 Sử dụng Model
 
-### Inference qua API (Recommended)
+### Inference qua API
 
 **Single prediction:**
 ```bash
@@ -212,7 +175,7 @@ response = requests.post(
 print(response.json())
 ```
 
-Xem thêm tại [src/api/README.md](src/api/README.md) để biết chi tiết về API.
+Chi tiết tham số/response xem tại `src/api/README.md`.
 
 ### Inference qua CLI
 
@@ -235,15 +198,9 @@ predictions = pipeline.predict(new_data)
 print(f"Predicted prices: {predictions}")
 ```
 
-## 📚 Dependencies
+## 📚 Tech stack
 
-- `pandas` - Data manipulation
-- `numpy` - Numerical operations
-- `scikit-learn` - ML models và preprocessing
-- `xgboost` - Gradient boosting model
-- `mlflow` - Experiment tracking
-- `joblib` - Model serialization
-- `docker` - MLflow server
+- FastAPI (API), Streamlit (UI), XGBoost + scikit-learn (ML), MLflow (tracking)
 
 ## 🎓 Model Performance
 
@@ -255,11 +212,8 @@ print(f"Predicted prices: {predictions}")
 
 ## 🚧 Tương lai
 
-- [x] API endpoint với FastAPI
-- [ ] Streamlit app cho interactive predictions
-- [ ] Model versioning
-- [x] Batch inference
-- [ ] Model monitoring
+- [x] API FastAPI, [x] Batch inference, [x] Streamlit UI
+- [ ] Model versioning, [ ] Monitoring/alerts
 
 ## 📝 Notes
 
@@ -271,26 +225,15 @@ print(f"Predicted prices: {predictions}")
 
 ## 🔧 Deployment
 
-### Option 1: Docker Compose (Recommended)
-
-Deploy API và MLflow cùng lúc:
+### Triển khai
 
 ```bash
-cd deployments/api
-docker compose up -d
-```
+# Docker Compose (khuyến nghị)
+cd deployments/api && docker compose up -d --build
 
-Xem chi tiết: [DEPLOYMENT.md](DEPLOYMENT.md)
-
-### Option 2: Local Development
-
-```bash
-# Start API
+# Local development
+pip install -r requirements.txt
 python src/api/run_api.py
-
-# Start MLflow (separate terminal)
-cd deployments/mlflow
-docker compose up -d
 ```
 
 ### Test API
@@ -300,11 +243,11 @@ docker compose up -d
 python src/api/test_api.py
 ```
 
-### Access Services
+### Truy cập dịch vụ
 
-- API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
-- MLflow UI: http://localhost:5555
+- API: http://localhost:8000 (Docs: /docs)
+- Frontend: http://localhost:8501
+- MLflow: http://localhost:5555
 
 ## 📄 License
 
