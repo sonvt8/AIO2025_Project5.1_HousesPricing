@@ -48,9 +48,10 @@ AIO2025_Project5.1_HousesPricing/
 
 ## 🚀 Quick Start
 
-### A. Chạy nhanh bằng Docker Compose (khuyến nghị)
+### Phương án A: Chạy nhanh bằng Docker Compose (khuyến nghị)
 
 ```bash
+python train.py               # nếu chưa có model
 cd deployments/api
 docker compose up -d --build
 ```
@@ -60,13 +61,13 @@ Truy cập:
 - Frontend: http://localhost:8501
 - MLflow: http://localhost:5555
 
-### B. Chạy local (dev)
+### Phương án B: Chạy local (dev)
 
 ```bash
 pip install -r requirements.txt
 python train.py               # nếu chưa có model
 python src/api/run_api.py     # chạy API tại 8000
-# tab khác: streamlit run src/frontend/app.py
+streamlit run src/frontend/app.py
 ```
 
 ## 📊 Kết quả
